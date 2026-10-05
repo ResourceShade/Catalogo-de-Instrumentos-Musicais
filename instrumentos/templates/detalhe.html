@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ instrumento.nome }} - Detalhes</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Harmonia Musical</h1>
+        <a href="{% url 'instrumentos:index' %}">Voltar à listagem</a>
+    </header>
+
+    <main>
+        <div class="detalhe-container">
+            <h2>{{ instrumento.nome }}</h2>
+            <img src="{% static 'images/instrumento.jpg' %}" alt="Imagem do instrumento {{ instrumento.nome }}">
+            <div class="detalhe-info">
+                <p><strong>ID:</strong> {{ instrumento.id }}</p>
+                <p><strong>Nome:</strong> {{ instrumento.nome }}</p>
+                <p><strong>Preço:</strong> R$ {{ instrumento.preco }}</p>
+                <p><strong>Estoque:</strong> {{ instrumento.estoque }} unidades</p>
+                <p><strong>Categoria:</strong> {{ instrumento.categoria|title }}</p>
+            </div>
+        </div>
+
+        <section class="acoes">
+            <button onclick="mostrarMensagem()">Clique aqui</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Harmonia Musical</p>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

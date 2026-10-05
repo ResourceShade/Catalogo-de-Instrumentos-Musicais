@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Musical - Catálogo</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Harmonia Musical</h1>
+        <h2>Catálogo de Instrumentos Musicais</h2>
+    </header>
+
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for instrumento in instrumentos %}
+                <tr>
+                    <td>{{ instrumento.id }}</td>
+                    <td><a href="{% url 'instrumentos:detalhe' instrumento.id %}">{{ instrumento.nome }}</a></td>
+                    <td>R$ {{ instrumento.preco }}</td>
+                    <td>{{ instrumento.estoque }}</td>
+                    <td>{{ instrumento.categoria|title }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">Nenhum instrumento cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <section class="acoes">
+            <button onclick="mostrarMensagem()">Clique aqui</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Harmonia Musical</p>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
