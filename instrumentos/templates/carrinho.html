@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho — Harmonia Musical</title>
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <a href="{% url 'instrumentos:index' %}" class="logo">
+      <span class="logo-title">🎵 Harmonia Musical</span>
+      <span class="logo-subtitle">Instrumentos &amp; Acessórios</span>
+    </a>
+    <form class="search-bar" method="GET" action="{% url 'instrumentos:index' %}">
+      <input type="text" name="q" placeholder="Buscar instrumento..." autocomplete="off">
+      <button type="submit">🔍</button>
+    </form>
+    <a href="{% url 'instrumentos:carrinho' %}" class="cart-btn">
+      🛒 Carrinho{% if total_carrinho > 0 %}<span class="cart-badge">{{ total_carrinho }}</span>{% endif %}
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="section-header" style="margin-bottom:2rem">
+    <h2 class="section-title">🛒 Meu Carrinho</h2>
+    {% if itens %}<span class="section-count">{{ itens|length }} item{% if itens|length != 1 %}s{% endif %}</span>{% endif %}
+  </div>
+
+  {% if itens %}
+  <div class="cart-layout">
+    <div class="cart-items">
+      {% for item in itens %}
+      <div class="cart-item">
+
+        <div class="cart-item-icon cat-{{ item.instrumento.categoria }}">
+          {% if item.instrumento.imagem %}
+            <img src="{% static item.instrumento.imagem %}" alt="{{ item.instrumento.nome }}"
+                 style="width:100%;height:100%;object-fit:contain;padding:.3rem;">
+          {% else %}
+            {% if item.instrumento.categoria == 'corda' %}🎸{% elif item.instrumento.categoria == 'sopro' %}🎷{% elif item.instrumento.categoria == 'percussao' %}🥁{% elif item.instrumento.categoria == 'teclas' %}🎹{% else %}🎵{% endif %}
+          {% endif %}
+        </div>
+
+        <div class="cart-item-info">
+          <div class="cart-item-name">{{ item.instrumento.nome }}</div>
+          <div class="cart-item-cat">{{ item.instrumento.get_categoria_display }} &middot; R$ {{ item.instrumento.preco }} / un.</div>
+        </div>
+
+        <div class="cart-qty-controls">
+          <form method="POST" action="{% url 'instrumentos:diminuir' item.instrumento.id %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="qty-btn {% if item.quantidade == 1 %}qty-trash{% endif %}"
+                    {% if item.quantidade == 1 %}
+                      onclick="return confirm('Remover &quot;{{ item.instrumento.nome|escapejs }}&quot; do carrinho?')"
+                      title="Remover do carrinho"
+                    {% else %}
+                      title="Diminuir quantidade"
+                    {% endif %}>
+              {% if item.quantidade == 1 %}🗑️{% else %}−{% endif %}
+            </button>
+          </form>
+
+          <span class="qty-num">{{ item.quantidade }}</span>
+
+          <form method="POST" action="{% url 'instrumentos:adicionar' item.instrumento.id %}">
+            {% csrf_token %}
+            <button type="submit" class="qty-btn"
+                    {% if item.quantidade >= item.instrumento.estoque %}
+                      disabled title="Estoque máximo atingido ({{ item.instrumento.estoque }} un.)"
+                    {% else %}
+                      title="Adicionar mais uma unidade"
+                    {% endif %}>+</button>
+          </form>
+        </div>
+
+        <span class="cart-item-subtotal">R$ {{ item.subtotal }}</span>
+
+        <form method="POST" action="{% url 'instrumentos:remover' item.instrumento.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-remove"
+                  onclick="return confirm('Remover &quot;{{ item.instrumento.nome|escapejs }}&quot; do carrinho?')"
+                  title="Remover item">🗑️</button>
+        </form>
+
+      </div>
+      {% endfor %}
+
+      <a href="{% url 'instrumentos:index' %}" class="btn-secondary" style="width:fit-content; margin-top:.5rem">
+        ← Continuar Comprando
+      </a>
+    </div>
+
+    <div class="cart-summary">
+      <h3>Resumo do Pedido</h3>
+      <div class="summary-line">
+        <span>Subtotal ({{ itens|length }} item{% if itens|length != 1 %}s{% endif %})</span>
+        <span>R$ {{ total }}</span>
+      </div>
+      <div class="summary-line">
+        <span>Frete</span>
+        <span style="color:var(--success);font-weight:600;">Grátis</span>
+      </div>
+      <div class="summary-total">
+        <span>Total</span>
+        <span>R$ {{ total }}</span>
+      </div>
+      <button class="btn-checkout" onclick="finalizarPedido()">
+        Finalizar Pedido →
+      </button>
+      <p style="text-align:center;font-size:.72rem;color:var(--text-m);margin-top:.75rem;">
+        🔒 Pagamento 100% seguro
+      </p>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <span class="icon">🛒</span>
+    <h3>Seu carrinho está vazio</h3>
+    <p>Adicione instrumentos ao carrinho para continuar.</p>
+    <a href="{% url 'instrumentos:index' %}">Ver Catálogo</a>
+  </div>
+  {% endif %}
+</main>
+
+<footer>
+  <p>&copy; 2026 Harmonia Musical &mdash; Todos os direitos reservados</p>
+</footer>
+
+<div id="toast"><span class="toast-icon">🛒</span><span class="toast-msg"></span></div>
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

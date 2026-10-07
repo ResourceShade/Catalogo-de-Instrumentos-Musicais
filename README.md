@@ -1,67 +1,136 @@
-# Harmonia Musical - Loja de Instrumentos Musicais
+# Harmonia Musical — Loja de Instrumentos Musicais
 
-Projeto Django desenvolvido para a 1ª Avaliação da disciplina Frameworks Back-End.
+**1ª Avaliação · Disciplina: Frameworks Back-End**  
+Professor: Rafael Rodrigues · Grupo 14
 
-## Descrição
+---
 
-Sistema de catálogo de instrumentos musicais com listagem geral e página de detalhe por item.
+## Integrantes
+
+| Nome | RA |
+|------|----|
+|      |    |
+|      |    |
+|      |    |
+|      |    |
+|      |    |
+|      |    |
+
+---
+
+## Sobre o projeto
+
+A **Harmonia Musical** é uma aplicação web desenvolvida com Django que simula o catálogo online de uma loja de instrumentos musicais. O sistema exibe os produtos disponíveis em grade de cards, permite visualizar o detalhe de cada instrumento e conta com um carrinho de compras funcional.
+
+O banco de dados inclui 8 instrumentos cadastrados pelo painel administrativo do Django, distribuídos entre as categorias Corda, Sopro, Percussão e Teclas.
+
+---
 
 ## Tecnologias
 
 - Python 3.12
 - Django 6.1.1
+- SQLite
+- HTML5, CSS3 e JavaScript
 
-## Estrutura do Projeto
+---
 
-- **harmonia_musical/** - Projeto Django principal
-- **instrumentos/** - Aplicação para gerenciamento de instrumentos
+## Como executar
 
-## Instalação e Execução
-
-### 1. Ativar o ambiente virtual
-
+**1. Ativar o ambiente virtual**
 ```bash
 source .venv/bin/activate
 ```
 
-### 2. Aplicar as migrações
-
+**2. Aplicar as migrações**
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 3. Criar superusuário (opcional)
-
-```bash
-python manage.py createsuperuser
-```
-
-### 4. Iniciar o servidor
-
+**3. Iniciar o servidor**
 ```bash
 python manage.py runserver
 ```
 
-Acesse: http://127.0.0.1:8000/
+Acesse em: `http://127.0.0.1:8000`
 
-### 5. Testar com DEBUG=False (opcional)
+O painel administrativo fica em `http://127.0.0.1:8000/admin`.
 
+**Testando com DEBUG=False**
 ```bash
 python manage.py collectstatic
-# Altere DEBUG para False em harmonia_musical/settings.py
+# Alterar DEBUG = False em harmonia_musical/settings.py
 python manage.py runserver
 ```
 
-## Funcionalidades
+---
 
-- [x] Model Instrumento com campos: nome, preco, estoque, categoria
-- [x] Listagem de todos os instrumentos em tabela HTML
-- [x] Página de detalhe dinâmica (/instrumentos/<id>/)
-- [x] Links na listagem para páginas de detalhe
-- [x] Arquivos estáticos (CSS, imagem e JavaScript)
-- [x] Admin configurado com 8 registros de exemplo
+## Requisitos atendidos
 
-## Autor
+Conforme a especificação do Grupo 14:
 
-Desenvolvido pelo Grupo 14
+- [x] Model `Instrumento` com os campos `nome`, `preco`, `estoque` e `categoria`
+- [x] Migrações criadas e aplicadas (`makemigrations` / `migrate`)
+- [x] Model registrado no Admin com 8 registros de exemplo cadastrados
+- [x] Página de listagem (`index`) exibindo todos os instrumentos em grade HTML
+- [x] Rota dinâmica de detalhe — `/instrumentos/<id>/` — com view e template próprios
+- [x] Nome de cada instrumento na listagem funciona como link para a página de detalhe
+- [x] Arquivo de estilos estático (`static/css/estilos.css`) aplicado em todas as páginas
+- [x] Imagem exibida via `{% static %}` nos templates
+- [x] Arquivo `static/js/script.js` com função JavaScript acionada por botão
+- [x] Projeto testado com `DEBUG = True` e `DEBUG = False`
+
+---
+
+## Extras
+
+Além dos requisitos obrigatórios, o grupo expandiu o projeto com funcionalidades adicionais:
+
+**Interface e navegação**
+- Grade de cards no catálogo, com imagem, categoria e indicador de estoque por produto
+- Imagem individual para cada instrumento (campo `imagem` adicionado ao model)
+- Barra de busca para filtrar produtos por nome
+- Filtros por categoria na barra de navegação (Corda, Sopro, Percussão, Teclas, Outros)
+- Breadcrumb de navegação na página de detalhe
+- Design responsivo — funciona em desktop, tablet e celular
+- Rodapé sempre fixo na borda inferior da tela
+
+**Carrinho de compras**
+- Carrinho funcional usando sessions do Django
+- Controles de quantidade (+/−) diretamente na página do carrinho
+- Validação de estoque: o sistema não permite adicionar mais unidades do que há disponível
+- Diálogo de confirmação ao remover um item (`confirm()` nativo do JavaScript)
+- Resumo do pedido com subtotal por item, frete e total geral
+
+**JavaScript com uso real**
+- O botão "Finalizar Pedido" dispara um `alert()` informando que o pagamento está temporariamente em manutenção — cumprindo o requisito de função JS com uma aplicação contextual dentro do fluxo do site
+
+---
+
+## Estrutura de arquivos
+
+```
+loja-instrumentos-musicais/
+├── harmonia_musical/
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── instrumentos/
+│   ├── migrations/
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── estilos.css
+│   │   ├── js/
+│   │   │   └── script.js
+│   │   └── images/
+│   ├── templates/
+│   │   ├── index.html
+│   │   ├── detalhe.html
+│   │   └── carrinho.html
+│   ├── admin.py
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+├── manage.py
+└── requirements.txt
+```

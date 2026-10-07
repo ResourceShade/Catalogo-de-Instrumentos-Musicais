@@ -2,39 +2,106 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ instrumento.nome }} - Detalhes</title>
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ instrumento.nome }} — Harmonia Musical</title>
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Harmonia Musical</h1>
-        <a href="{% url 'instrumentos:index' %}">Voltar à listagem</a>
-    </header>
 
-    <main>
-        <div class="detalhe-container">
-            <h2>{{ instrumento.nome }}</h2>
-            <img src="{% static 'images/instrumento.jpg' %}" alt="Imagem do instrumento {{ instrumento.nome }}">
-            <div class="detalhe-info">
-                <p><strong>ID:</strong> {{ instrumento.id }}</p>
-                <p><strong>Nome:</strong> {{ instrumento.nome }}</p>
-                <p><strong>Preço:</strong> R$ {{ instrumento.preco }}</p>
-                <p><strong>Estoque:</strong> {{ instrumento.estoque }} unidades</p>
-                <p><strong>Categoria:</strong> {{ instrumento.categoria|title }}</p>
-            </div>
+<header>
+  <div class="header-top">
+    <a href="{% url 'instrumentos:index' %}" class="logo">
+      <span class="logo-title">🎵 Harmonia Musical</span>
+      <span class="logo-subtitle">Instrumentos &amp; Acessórios</span>
+    </a>
+    <form class="search-bar" method="GET" action="{% url 'instrumentos:index' %}">
+      <input type="text" name="q" placeholder="Buscar instrumento..." autocomplete="off">
+      <button type="submit">🔍</button>
+    </form>
+    <a href="{% url 'instrumentos:carrinho' %}" class="cart-btn">
+      🛒 Carrinho{% if total_carrinho > 0 %}<span class="cart-badge">{{ total_carrinho }}</span>{% endif %}
+    </a>
+  </div>
+</header>
+
+<main>
+  <nav class="breadcrumb">
+    <a href="{% url 'instrumentos:index' %}">Catálogo</a>
+    <span>›</span>
+    <a href="{% url 'instrumentos:index' %}?categoria={{ instrumento.categoria }}">{{ instrumento.get_categoria_display }}</a>
+    <span>›</span>
+    <span>{{ instrumento.nome }}</span>
+  </nav>
+
+  <div class="detail-layout">
+    <div class="detail-image cat-{{ instrumento.categoria }}">
+      {% if instrumento.imagem %}
+        <img src="{% static instrumento.imagem %}" alt="{{ instrumento.nome }}">
+      {% else %}
+        <span style="font-size:8rem">
+          {% if instrumento.categoria == 'corda' %}🎸{% elif instrumento.categoria == 'sopro' %}🎷{% elif instrumento.categoria == 'percussao' %}🥁{% elif instrumento.categoria == 'teclas' %}🎹{% else %}🎵{% endif %}
+        </span>
+      {% endif %}
+    </div>
+    <div class="detail-body">
+      <span class="cat-badge badge-{{ instrumento.categoria }}" style="width:fit-content">
+        {{ instrumento.get_categoria_display }}
+      </span>
+
+      <h1 class="detail-name">{{ instrumento.nome }}</h1>
+      <div class="detail-price"><span>R$</span>{{ instrumento.preco }}</div>
+
+      <div class="detail-attrs">
+        <div class="detail-attr">
+          <span class="detail-attr-label">Categoria</span>
+          <span>
+            {% if instrumento.categoria == 'corda' %}🎸
+            {% elif instrumento.categoria == 'sopro' %}🎷
+            {% elif instrumento.categoria == 'percussao' %}🥁
+            {% elif instrumento.categoria == 'teclas' %}🎹
+            {% else %}🎵{% endif %}
+            {{ instrumento.get_categoria_display }}
+          </span>
         </div>
+        <div class="detail-attr">
+          <span class="detail-attr-label">Estoque</span>
+          <span>
+            {% if instrumento.estoque == 0 %}
+              <span class="stock-badge stock-out">Fora de estoque</span>
+            {% elif instrumento.estoque <= 3 %}
+              <span class="stock-badge stock-low">{{ instrumento.estoque }} un. disponível{% if instrumento.estoque != 1 %}s{% endif %} (limitado)</span>
+            {% else %}
+              <span class="stock-badge stock-ok">{{ instrumento.estoque }} unidades disponíveis</span>
+            {% endif %}
+          </span>
+        </div>
+        <div class="detail-attr">
+          <span class="detail-attr-label">Código</span>
+          <span style="color:var(--text-m); font-size:.9rem;">#{{ instrumento.id|stringformat:"04d" }}</span>
+        </div>
+      </div>
 
-        <section class="acoes">
-            <button onclick="mostrarMensagem()">Clique aqui</button>
-        </section>
-    </main>
+      {% if instrumento.estoque > 0 %}
+      <form method="POST" action="{% url 'instrumentos:adicionar' instrumento.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary" style="width:100%">🛒 Adicionar ao Carrinho</button>
+      </form>
+      {% else %}
+      <button class="btn-primary" disabled style="width:100%">Produto Indisponível</button>
+      {% endif %}
 
-    <footer>
-        <p>&copy; 2026 Harmonia Musical</p>
-    </footer>
+      <a href="{% url 'instrumentos:index' %}" class="btn-secondary">← Voltar ao Catálogo</a>
+    </div>
+  </div>
+</main>
 
-    <script src="{% static 'js/script.js' %}"></script>
+<footer>
+  <p>&copy; 2026 Harmonia Musical &mdash; Todos os direitos reservados</p>
+</footer>
+
+<div id="toast"><span class="toast-icon">🛒</span><span class="toast-msg"></span></div>
+
+<script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
