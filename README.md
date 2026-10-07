@@ -7,14 +7,11 @@ Professor: Rafael Rodrigues · Grupo 14
 
 ## Integrantes
 
-| Nome | RA |
-|------|----|
-|      |    |
-|      |    |
-|      |    |
-|      |    |
-|      |    |
-|      |    |
+| Nome                            | RA       |
+| ------------------------------- | -------- |
+| Arthur Felix Oliveira Torres    | 01848455 |
+| Felipe Gabriel Barbosa Dionizio | 01848719 |
+| Tiago Renato Vinícius Silva     | 01808230 |
 
 ---
 
